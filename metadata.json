@@ -1,0 +1,6 @@
+{
+  "name": "LEGO HuffmanLab",
+  "description": "乐高多元 Huffman 算法实验室 — 面向《算法设计与分析》实现题 4-14 的纯前端交互式贪心算法演示、积木树可视化、课堂挑战与性能分析平台。",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

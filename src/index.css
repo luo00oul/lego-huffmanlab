@@ -1,0 +1,274 @@
+@import "tailwindcss";
+@import "katex/dist/katex.min.css";
+
+:root {
+  --bg-canvas: #f4f1e9;
+  --bg-grid: rgba(207, 198, 177, 0.45);
+  --surface-card: #fffdf8;
+  --surface-board: #e9e4d7;
+  --surface-inset: #f7f4ec;
+  --ink-primary: #25262a;
+  --ink-secondary: #53535a;
+  --ink-muted: #6e6c73;
+  --border-ink: #25262a;
+
+  /* Classic LEGO 4-Color Palette (matching LEGO BatchLab series) */
+  --lego-red: #e74636;
+  --lego-red-edge: #a62824;
+  --lego-yellow: #f6c823;
+  --lego-yellow-edge: #b2820d;
+  --lego-yellow-ink: #2b271e;
+  --lego-blue: #2f79c3;
+  --lego-blue-edge: #1c508d;
+  --lego-green: #35925b;
+  --lego-green-edge: #1e613d;
+}
+
+@layer base {
+  html {
+    font-family: 'Noto Sans SC', 'Manrope', system-ui, -apple-system, sans-serif;
+    color: var(--ink-primary);
+    background-color: var(--bg-canvas);
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--ink-primary);
+    background-color: var(--bg-canvas);
+    background-image:
+      linear-gradient(var(--bg-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+    background-size: 28px 28px;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Manrope', 'Noto Sans SC', sans-serif;
+    text-wrap: balance;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Single-elevation LEGO instruction sheet panel */
+.lego-panel {
+  background-color: var(--surface-card);
+  border: 2px solid var(--border-ink);
+  border-radius: 10px;
+  box-shadow: 4px 4px 0 var(--border-ink);
+}
+
+/* Studded LEGO baseplate surface */
+.lego-baseplate {
+  background-color: var(--surface-board);
+  border: 2px solid var(--border-ink);
+  border-radius: 10px;
+  background-image: radial-gradient(rgba(166, 156, 134, 0.55) 1.5px, transparent 1.5px);
+  background-size: 16px 16px;
+}
+
+/* Tactile LEGO brick button with physical press feel */
+.lego-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 40px;
+  padding: 0.45rem 0.95rem;
+  font-weight: 700;
+  font-size: 0.875rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  flex-shrink: 0;
+  border: 2px solid var(--border-ink);
+  border-radius: 7px;
+  box-shadow: 3px 3px 0 var(--border-ink);
+  cursor: pointer;
+  user-select: none;
+  transition: transform 120ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 120ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 120ms ease;
+}
+
+.lego-btn:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--border-ink);
+}
+
+.lego-btn:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--border-ink);
+}
+
+.lego-btn:focus-visible {
+  outline: 3px solid var(--lego-blue);
+  outline-offset: 2px;
+}
+
+.lego-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: 1px 1px 0 var(--border-ink);
+}
+
+.lego-btn-red {
+  background-color: var(--lego-red);
+  color: #ffffff;
+}
+.lego-btn-red:hover:not(:disabled) {
+  background-color: #d63a2b;
+}
+
+.lego-btn-blue {
+  background-color: var(--lego-blue);
+  color: #ffffff;
+}
+.lego-btn-blue:hover:not(:disabled) {
+  background-color: #2669ad;
+}
+
+.lego-btn-yellow {
+  background-color: var(--lego-yellow);
+  color: var(--lego-yellow-ink);
+}
+.lego-btn-yellow:hover:not(:disabled) {
+  background-color: #e9bc17;
+}
+
+.lego-btn-green {
+  background-color: var(--lego-green);
+  color: #ffffff;
+}
+.lego-btn-green:hover:not(:disabled) {
+  background-color: #2c7e4e;
+}
+
+.lego-btn-neutral {
+  background-color: var(--surface-card);
+  color: var(--ink-primary);
+}
+.lego-btn-neutral:hover:not(:disabled) {
+  background-color: #f3eee0;
+}
+
+/* Tactile input fields */
+.lego-input {
+  min-height: 40px;
+  padding: 0.45rem 0.75rem;
+  background-color: #ffffff;
+  color: var(--ink-primary);
+  border: 2px solid var(--border-ink);
+  border-radius: 7px;
+  font-size: 0.875rem;
+  transition: box-shadow 120ms ease;
+}
+
+.lego-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(47, 121, 195, 0.28);
+}
+
+/* LEGO Brick entity styles */
+.lego-brick-0 {
+  --brick-face: #e74636;
+  --brick-edge: #a62824;
+  --brick-ink: #ffffff;
+  --brick-plate-bg: rgba(0, 0, 0, 0.16);
+}
+.lego-brick-1 {
+  --brick-face: #f6c823;
+  --brick-edge: #b2820d;
+  --brick-ink: #2b271e;
+  --brick-plate-bg: rgba(255, 255, 255, 0.45);
+}
+.lego-brick-2 {
+  --brick-face: #2f79c3;
+  --brick-edge: #1c508d;
+  --brick-ink: #ffffff;
+  --brick-plate-bg: rgba(0, 0, 0, 0.16);
+}
+.lego-brick-3 {
+  --brick-face: #35925b;
+  --brick-edge: #1e613d;
+  --brick-ink: #ffffff;
+  --brick-plate-bg: rgba(0, 0, 0, 0.16);
+}
+
+.lego-brick-shell {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--brick-face);
+  color: var(--brick-ink);
+  border: 2px solid var(--border-ink);
+  border-radius: 5px;
+  box-shadow:
+    0 6px 0 var(--brick-edge),
+    0 8px 0 var(--border-ink),
+    inset 0 2px 0 rgba(255, 255, 255, 0.3);
+  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 160ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 160ms ease;
+}
+
+.lego-brick-virtual {
+  background-color: rgba(255, 253, 248, 0.72);
+  color: var(--ink-secondary);
+  border: 2px dashed var(--border-ink);
+  box-shadow: 0 4px 0 rgba(37, 38, 42, 0.18);
+}
+
+.lego-stud-row {
+  position: absolute;
+  top: -9px;
+  left: 4px;
+  right: 4px;
+  display: flex;
+  justify-content: space-evenly;
+  pointer-events: none;
+}
+
+.lego-stud {
+  width: 14px;
+  height: 8px;
+  background-color: var(--brick-face);
+  border: 2px solid var(--border-ink);
+  border-bottom: 0;
+  border-radius: 4px 4px 0 0;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.45);
+}
+
+.lego-stud-virtual {
+  background-color: rgba(255, 253, 248, 0.8);
+  border: 2px dashed var(--border-ink);
+  border-bottom: 0;
+}
+
+/* Presentation Mode scaling for classroom projectors */
+.presentation-mode {
+  font-size: 112%;
+}
+
+.presentation-mode .lego-panel {
+  box-shadow: 5px 5px 0 var(--border-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
