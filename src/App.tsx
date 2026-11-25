@@ -191,7 +191,7 @@ const AppShell: React.FC = () => {
         <footer className="mt-10 border-t-2 border-[#25262a]/20 bg-[#f4f1e9]/90 px-4 py-5 text-xs text-[#53535a]">
           <div className="mx-auto flex max-w-[1480px] flex-wrap items-center justify-between gap-3">
             <span>
-              LEGO HuffmanLab · 湖南大学《算法设计与分析》实现题 4-14 课程作品
+              LEGO HuffmanLab · 算法设计与分析 · 多元 Huffman 编码交互实验平台
             </span>
             <span>
               积木造型为原创几何绘制，未使用第三方官方标志，全部算法均在本地浏览器运行。

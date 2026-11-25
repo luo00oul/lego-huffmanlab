@@ -101,7 +101,7 @@ export const WorkshopPage: React.FC<WorkshopPageProps> = ({onNavigate}) => {
         <div className="flex flex-col justify-between space-y-6 lg:col-span-6">
           <div className="space-y-4">
             <p className="text-xs font-bold tracking-wide text-[#53535a]">
-              湖南大学 · 计算机科学与技术 · 《算法设计与分析》实现题 4-14
+              算法设计与分析 · 贪心算法 · 多元 Huffman 编码
             </p>
             <h1 className="text-4xl font-extrabold leading-[1.15] tracking-tight text-[#25262a] sm:text-5xl">
               用搭乐高的方式
@@ -433,10 +433,10 @@ export const WorkshopPage: React.FC<WorkshopPageProps> = ({onNavigate}) => {
       <section className="lego-panel flex flex-wrap items-center justify-between gap-4 p-5">
         <div className="space-y-1">
           <h3 className="text-sm font-extrabold text-[#25262a]">
-            关于课程展示与系列延续
+            关于项目与视觉说明
           </h3>
           <p className="text-xs leading-6 text-[#53535a]">
-            湖南大学信息科学与工程学院《算法设计与分析》小班展示作品 · 延续 LEGO BatchLab 原创乐高积木视觉体系。
+            面向计算机专业学习者的《算法设计与分析》公开交互教学平台 · 延续 LEGO BatchLab 原创乐高积木视觉体系。
             所有积木元素均由代码原创绘制，不包含任何未经授权的第三方商标素材。
           </p>
         </div>
