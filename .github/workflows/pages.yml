@@ -24,20 +24,22 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: npm
+          node-version: '22'
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
-        run: npm ci
+        run: bun install --frozen-lockfile
 
       - name: TypeScript type check
-        run: npm run lint
+        run: bun run lint
 
       - name: Run Vitest unit & exhaustive cross-validation tests
-        run: npm test
+        run: bun run test
 
       - name: Build production static bundle
-        run: npm run build
+        run: bun run build
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
