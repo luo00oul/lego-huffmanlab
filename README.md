@@ -1,131 +1,465 @@
-# LEGO HuffmanLab · 乐高多元 Huffman 算法实验室
+# 🧱 LEGO HuffmanLab
 
-面向计算机专业学习者的公开《算法设计与分析》交互式算法教学与实验平台，对应经典教材 **实现题 4-14：多元 Huffman 编码问题**。本项目延续 [LEGO BatchLab](https://github.com/luo00oul/lego-batchlab) 的原创乐高积木视觉体系，将贪心算法、优先队列、多元 Huffman 树、反例证伪、真实性能压测与课堂展示模式融为一体。
+**Build with Bricks. Think with Algorithms.**
 
-- **预期线上地址**：`https://luo00oul.github.io/lego-huffmanlab/`
-- **默认官方样例**：`n = 7, k = 3, weights = [45, 13, 12, 16, 9, 5, 22]` → **输出 `593 199`**
+用搭乐高的方式，看懂多元 Huffman 贪心算法。
 
-> 说明：网站中所有乐高积木、底板与工程师小人均为纯代码原创几何绘制，不含未经授权的官方标志或素材；全部核心算法均在本地浏览器运行，无后端、数据库或外部 API 依赖。
+一个融合乐高积木视觉设计、交互式算法可视化、贪心策略研究与真实性能测试的算法学习实验平台。
 
----
-
-## 一、原始算法题目
-
-**实现题 4-14：多元 Huffman 编码问题**
-
-在一个操场的四周摆放着 $n$ 堆石子。现要将石子有次序地合并成一堆。规定每次**至少选 2 堆、最多选 $k$ 堆**石子合并成新的一堆，合并的费用为新的一堆的石子数。设计一个算法，计算出将 $n$ 堆石子合并成一堆的最大总费用和最小总费用（允许任意选择石子堆，不要求相邻）。
-
-- 输入样例 (`cpp/input.txt`)：
-  ```text
-  7 3
-  45 13 12 16 9 5 22
-  ```
-- 输出样例 (`cpp/output.txt`)：
-  ```text
-  593 199
-  ```
+[在线体验](https://luo00oul.github.io/lego-huffmanlab/) · [源代码](https://github.com/luo00oul/lego-huffmanlab) · [系列项目 LEGO BatchLab](https://github.com/luo00oul/lego-batchlab) · [构建状态](https://github.com/luo00oul/lego-huffmanlab/actions)
 
 ---
 
-## 二、七大核心功能模块与课堂展示模式
+## 📖 项目简介
 
-1. **积木工坊（Workshop）**：自动拼装开场动画、原始题目、最大/最小费用直觉对比与课程信息。
-2. **算法实验室（Algorithm Lab）**：左侧小根堆（最小费用）与右侧大根堆（最大费用）双策略对比；支持选块高亮→移入拼装台→吸附生成新块三阶段动画，联动优先队列、历史跳转与伪代码高亮；支持同步/独立播放、`input.txt` 导入与 `output.txt` 导出。
-3. **Huffman Tree 积木树**：动态生长的多元 Huffman 树与最大费用二叉链式合并树；支持缩放平移、节点检视、$k$ 进制编码展示、WPL 逐步核对表，以及「首次调整（不补零）」与「补零满 $k$ 叉（自动折叠超多虚零）」双视图切换。
-4. **积木挑战（Challenge）**：面向课堂现场互动的手动点击合并挑战，支持最小/最大费用双目标、撤销、贪心提示、星级评分，并**严格兼容所有等价最优路径**（绝不误判非标准顺序但费用相同的最优方案）。
-5. **贪心策略研究室（Strategy Lab）**：7 种合并策略横向对比，内建 Web Worker 记忆化穷举验证（$n \le 8$ 安全上限）与**自动反例搜索器**（可视化对比 `n=4, k=3, [1,2,3,4]` 下 13 vs 16）。
-6. **性能分析（Benchmark）**：Web Worker 隔离调用纯 $O(n \log n)$ / $O(n)$ 空间无快照引擎，真实记录 $n$-耗时、$k$-最小费用、多策略对比及分布影响 4 组交互式乐高图表并支持 CSV 导出。
-7. **算法百科（Documentation）**：19 讲大学课程级中文讲义（KaTeX 公式、交换论证、补零等价、最大费用两步证明、边界条件、可复制下载的 C++17 / TypeScript 源码及 5–10 分钟课堂讲稿）。
-8. **课堂展示模式（Presentation Mode）**：一键全屏大字投影、隐藏多余导航、支持键盘快捷键（`Space`、`←`/`→`、`R`、`S`、`F`、`Esc`）且所有操作均有大尺寸触屏按钮与可展开悬浮讲稿提词卡。
+LEGO HuffmanLab 是一个面向算法学习者的交互式教学与实验平台，围绕多元 Huffman 编码及石子合并问题展开。
 
----
+项目延续 LEGO BatchLab 的积木视觉设计理念，将抽象的算法执行过程转化为直观的积木拼装过程，让学习者能够观察、操作、验证和理解算法，而不仅仅是阅读代码或记忆结论。
 
-## 三、算法与工程严谨性
+在这里，你可以：
 
-- **纯算法核心与动画事件流彻底解耦**：纯算法模块（`src/algorithms/core.ts`）仅维护一维 `BigIntHeap`，时间复杂度 $O(n \log n)$、空间复杂度 $O(n)$，直接服务于大规模性能测试；轨迹生成器（`src/algorithms/trace.ts`）专供可视化回放使用。
-- **全程无损大整数精度**：TypeScript 从字符串解析到累加全程使用原生 `BigInt`（绝不先转 `Number` 导致 $2^{53}$ 以上丢精度）；C++17 使用 `__int128_t` 防止 64 位整数溢出。
-- **首次调整公式避免无谓补零**：当 $n > 1$ 时首轮合并 $r = 2 + (n - 2) \bmod (k - 1)$ 堆，等价于补齐 $m = ((k - 1) - (n - 1) \bmod (k - 1)) \bmod (k - 1)$ 个零权值虚节点，避免 $k \gg n$ 时的无效节点开销。
+- 观察贪心算法的每一步决策。
+- 理解小根堆、大根堆与 Huffman 树之间的联系。
+- 亲手选择积木，挑战最优合并策略。
+- 通过反例与穷举验证探索贪心算法的适用边界。
+- 通过真实性能测试理解算法复杂度。
+
+整个项目采用纯前端架构，核心计算在浏览器本地完成，无需后端服务器、数据库或外部 AI API。
 
 ---
 
-## 四、技术栈
+## 🎮 在线体验
 
-- **前端框架**：React 19 + TypeScript + Vite 8 + Tailwind CSS 4
-- **动效与图标**：Motion (`motion/react`) + Lucide React
-- **图表与公式**：Apache ECharts + KaTeX
-- **并发与测试**：Web Workers + Vitest + C++17 (`g++`)
-- **自动化部署**：GitHub Actions + GitHub Pages（`base: './'` + Hash 路由零 404）
+访问地址：[LEGO HuffmanLab](https://luo00oul.github.io/lego-huffmanlab/)
+
+无需安装、无需注册，打开浏览器即可使用。
+
+支持桌面电脑、平板、触摸屏及课堂投影等使用场景。
 
 ---
 
-## 五、本地运行与测试
+## ✨ 核心功能
+
+| 功能模块 | 功能介绍 |
+| --- | --- |
+| 🧱 积木工坊 | 乐高拼装动画、问题介绍与最大最小费用直觉对比 |
+| ⚙️ 算法实验室 | 双策略动态演示、优先队列、单步执行、历史回退与伪代码高亮 |
+| 🌳 Huffman 积木树 | 动态树形结构、节点检视、编码展示、WPL 计算与虚拟零节点 |
+| 🎮 积木挑战 | 自主选择合并节点、挑战最优解、操作撤销与策略提示 |
+| 🔬 贪心策略研究室 | 七种合并策略对比、记忆化穷举验证与自动反例搜索 |
+| 📊 性能分析 | 真实算法耗时测试、交互式图表、数据分布研究与 CSV 导出 |
+| 📚 算法百科 | 算法原理、数学推导、正确性证明、复杂度分析与参考源码 |
+| 🖥️ 演示模式 | 全屏展示、键盘快捷键、触屏操作与课堂讲稿 |
+
+---
+
+## 🧩 算法问题
+
+### 多元 Huffman 编码问题
+
+给定 $n$ 堆石子，每次可以任意选择至少 2 堆、至多 $k$ 堆石子进行合并。
+
+每次合并的费用等于新石子堆的重量。
+
+目标是计算所有石子最终合并为一堆时的：
+
+- 最大总合并费用。
+- 最小总合并费用。
+
+石子堆可以任意选择，不要求相邻。
+
+### 示例
+
+输入：
+
+```text
+7 3
+45 13 12 16 9 5 22
+```
+
+输出：
+
+```text
+593 199
+```
+
+同一组输入数据，仅改变合并策略，总费用便会产生显著差异。
+
+| 合并目标 | 核心数据结构 | 最优总费用 |
+| --- | --- | ---: |
+| 最小费用 | 小根堆 | 199 |
+| 最大费用 | 大根堆 | 593 |
+
+---
+
+## 🧠 核心算法
+
+### 1. 最小费用：多元 Huffman 贪心
+
+不同于普通二元 Huffman 算法，多元合并需要考虑首次合并的节点数量。
+
+当 $n>1$ 时，首次合并数量为：
+
+$$
+r=2+(n-2)\bmod(k-1)
+$$
+
+算法流程：
+
+1. 将全部石子堆加入小根堆。
+2. 首次取出权值最小的 $r$ 个节点进行合并。
+3. 此后每次取出权值最小的 $k$ 个节点进行合并。
+4. 将新节点重新加入小根堆。
+5. 重复上述操作，直到仅剩一个节点。
+
+该方法等价于经典多元 Huffman 算法中的虚拟零节点补齐策略，但无需实际创建额外的零权值节点。
+
+补零数量为：
+
+$$
+m=((k-1)-(n-1)\bmod(k-1))\bmod(k-1)
+$$
+
+### 2. 最大费用：逆向贪心
+
+为了使总合并费用最大，每次选择权值最大的两个节点进行合并。
+
+使用大根堆维护当前所有节点，使较大的权值能够反复参与后续合并，从而形成最大费用的二叉链式结构。
+
+### 3. 合并费用与带权路径长度
+
+合并过程可以表示为一棵树，其总合并费用满足：
+
+$$
+C=\sum_{i=1}^{n}w_i d_i
+$$
+
+其中：
+
+- $w_i$ 为第 $i$ 个叶子节点的权值。
+- $d_i$ 为对应叶子节点的深度。
+
+因此：
+
+$$
+\text{Total Cost}=\text{WPL}
+$$
+
+这一关系建立了石子合并问题与 Huffman 编码之间的数学联系。
+
+### 4. 算法复杂度
+
+| 算法 | 时间复杂度 | 辅助空间复杂度 |
+| --- | --- | --- |
+| 多元 Huffman 最小费用 | $O(n\log n)$ | $O(n)$ |
+| 大根堆最大费用 | $O(n\log n)$ | $O(n)$ |
+
+上述复杂度针对纯堆算法，以整数运算为单位成本，不包含动画轨迹存储、页面渲染与大整数运算的额外开销。
+
+---
+
+## 🔬 不只是算法可视化
+
+### 反例驱动的算法学习
+
+看似合理的贪心策略，并不一定能够得到全局最优解。
+
+例如：
+
+```text
+n = 4
+k = 3
+weights = [1, 2, 3, 4]
+```
+
+直接合并最小的三个节点：
+
+```text
+1 + 2 + 3 = 6
+4 + 6 = 10
+
+Total Cost = 16
+```
+
+采用正确的首次合并调整策略：
+
+```text
+1 + 2 = 3
+3 + 3 + 4 = 10
+
+Total Cost = 13
+```
+
+LEGO HuffmanLab 内置自动反例搜索器与小规模记忆化穷举引擎，用于比较不同策略的结果。
+
+通过这种方式，学习者不仅可以知道算法如何运行，还可以理解为什么某些策略会失败。
+
+### 真实的性能实验
+
+性能分析模块通过 Web Workers 执行独立的算法计算，避免动画渲染干扰算法计时。
+
+支持：
+
+- 不同输入规模的运行时间测试。
+- 不同 $k$ 值对合并费用的影响分析。
+- 多种算法策略的性能对比。
+- 均匀、偏态、指数及相同权值分布。
+- 固定随机种子与多轮实验。
+- CSV 实验数据导出。
+
+实验结果来源于浏览器实际运行数据，而非预设的模拟曲线。
+
+---
+
+## 🏗️ 工程设计
+
+### 算法与可视化解耦
+
+独立维护纯算法计算引擎与可视化轨迹生成器，使算法计算、动画播放、树形展示和性能分析拥有清晰的职责边界。
+
+### 大整数精度
+
+TypeScript 核心计算使用原生 `BigInt`，避免超过 JavaScript 安全整数范围时发生精度丢失。
+
+C++17 参考实现则在编译器支持的情况下使用 `__int128_t` 扩大整数表示范围。
+
+### 并行计算
+
+通过 Web Workers 隔离穷举验证、反例搜索及大规模性能实验，降低计算任务对页面交互的影响。
+
+### 自动化质量保障
+
+项目包含 Vitest 自动化测试，覆盖：
+
+- 经典输入输出样例。
+- 边界条件与非法输入。
+- 大整数计算。
+- 120 组随机穷举交叉验证。
+- 虚拟补零与首次调整策略的等价性。
+- 不同最优合并路径的正确性。
+- 自动反例搜索。
+
+GitHub Actions 自动执行类型检查、单元测试、生产构建及网站部署。
+
+---
+
+## 🛠️ 技术栈
+
+| 技术 | 用途 |
+| --- | --- |
+| React 19 | 交互式前端界面 |
+| TypeScript | 类型安全与算法实现 |
+| Vite 8 | 前端开发与构建 |
+| Tailwind CSS 4 | 响应式布局与视觉设计 |
+| Motion | 积木拼装动画 |
+| Lucide React | 界面图标 |
+| Apache ECharts | 交互式数据可视化 |
+| KaTeX | 数学公式渲染 |
+| Web Workers | 独立计算任务 |
+| Vitest | 自动化单元测试 |
+| Bun | 依赖管理与脚本执行 |
+| GitHub Actions | 持续集成与自动部署 |
+| GitHub Pages | 静态网站托管 |
+
+---
+
+## 🚀 快速开始
+
+### 环境要求
+
+- Node.js 22.12 或更高版本
+- Bun
+- Git
+
+### 克隆项目
 
 ```bash
-# 1. 安装依赖
-npm install
+git clone https://github.com/luo00oul/lego-huffmanlab.git
+cd lego-huffmanlab
+```
 
-# 2. 启动本地开发服务器（默认 http://localhost:3000）
-npm run dev
+### 安装依赖
 
-# 3. 运行 Vitest 单元测试与 120 组随机穷举交叉验证
-npm test
+```bash
+bun install
+```
 
-# 4. TypeScript 静态类型检查
-npm run lint
+### 启动开发服务器
 
-# 5. 构建生产静态产物
-npm run build
+```bash
+bun run dev
+```
 
-# 6. 编译并验证 C++17 参考程序
-g++ -std=c++17 -O2 cpp/main.cpp -o /tmp/huffman
-/tmp/huffman cpp/input.txt /tmp/output.txt
-diff -u cpp/output.txt /tmp/output.txt
+默认访问地址：
+
+```text
+http://localhost:3000
+```
+
+### 运行测试
+
+```bash
+bun run test
+```
+
+### TypeScript 类型检查
+
+```bash
+bun run lint
+```
+
+### 构建生产版本
+
+```bash
+bun run build
+```
+
+构建产物将输出至 `dist/` 目录。
+
+### 预览生产版本
+
+```bash
+bun run preview
 ```
 
 ---
 
-## 六、GitHub Pages 发布指南
+## 💻 C++ 参考实现
 
-项目已内置 `.github/workflows/pages.yml`、`public/.nojekyll`、`vite.config.ts` (`base: './'`) 与 Hash 路由。创建独立仓库并发布仅需以下几步：
+项目同时提供独立于前端网站的 C++17 算法参考实现。
 
 ```bash
-# 1. 在 GitHub 上新建空仓库：luo00oul/lego-huffmanlab
-# 2. 在本地项目根目录初始化并推送至 main 分支
-git init
-git add .
-git commit -m "feat: release LEGO HuffmanLab v1.0"
-git branch -M main
-git remote add origin https://github.com/luo00oul/lego-huffmanlab.git
-git push -u origin main
+g++ -std=c++17 -O2 cpp/main.cpp -o huffman
 ```
 
-3. 打开仓库页面 `Settings → Pages`，将 **Source** 设置为 **GitHub Actions**。
-4. 等待 `Build and Deploy LEGO HuffmanLab to GitHub Pages` 工作流变绿后，即可访问：
-   `https://luo00oul.github.io/lego-huffmanlab/`
+运行程序：
+
+```bash
+./huffman cpp/input.txt result.txt
+```
+
+验证输出：
+
+```bash
+diff -u cpp/output.txt result.txt
+```
+
+预期输出：
+
+```text
+593 199
+```
 
 ---
 
-## 七、项目目录结构
+## 📁 项目结构
 
 ```text
 lego-huffmanlab/
-├── .github/workflows/pages.yml    # GitHub Pages 自动测试与部署
+├── .github/
+│   └── workflows/
+│       └── pages.yml
 ├── cpp/
-│   ├── main.cpp                   # C++17 参考实现（__int128 防溢出）
-│   ├── input.txt                  # 官方输入样例
-│   └── output.txt                 # 官方输出样例 (593 199)
+│   ├── main.cpp
+│   ├── input.txt
+│   └── output.txt
 ├── docs/
-│   └── presentation-script.md     # 5-10 分钟课堂展示完整讲稿
+│   └── presentation-script.md
 ├── public/
-│   └── .nojekyll                  # 禁用 Jekyll 处理
 ├── src/
-│   ├── algorithms/                # 纯算法引擎、二叉堆、BigInt 解析、穷举与轨迹
-│   ├── components/                # 乐高积木、工程师小人、KaTeX 公式、代码框、演示条
-│   ├── hooks/                     # 全局数据集上下文与 Hash 路由
-│   ├── pages/                     # 七大核心功能页面
-│   ├── types/                     # TypeScript 类型契约
-│   ├── visualizations/            # SVG 交互式积木树画布与 ECharts 封装
-│   └── workers/                   # Web Worker（穷举搜索、反例搜索、真实压测）
-└── tests/
-    └── algorithms.test.ts         # Vitest 单元测试与小规模随机穷举交叉验证
+│   ├── algorithms/       # 算法核心与模拟轨迹
+│   ├── components/       # 积木与公共组件
+│   ├── hooks/            # 状态管理与交互逻辑
+│   ├── pages/            # 功能页面
+│   ├── types/            # TypeScript 类型定义
+│   ├── visualizations/   # 树形结构与图表
+│   └── workers/          # 独立计算任务
+├── tests/
+│   └── algorithms.test.ts
+├── bun.lock
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+└── README.md
 ```
+
+---
+
+## 🌐 自动化部署
+
+项目使用 GitHub Actions 与 GitHub Pages 实现持续集成和静态网站部署。
+
+```text
+Push to main
+     ↓
+Install Dependencies
+     ↓
+TypeScript Check
+     ↓
+Vitest Tests
+     ↓
+Production Build
+     ↓
+Deploy to GitHub Pages
+```
+
+在仓库的 `Settings → Pages` 中，将部署来源设置为 `GitHub Actions`，即可通过内置工作流完成自动构建与部署。
+
+---
+
+## 🖥️ 演示模式
+
+为课堂讲解、算法教学及项目展示提供独立的演示模式。
+
+| 快捷键 | 操作 |
+| --- | --- |
+| `Space` | 播放 / 暂停 |
+| `←` | 上一步 |
+| `→` | 下一步 |
+| `R` | 重置演示 |
+| `S` | 载入经典样例 |
+| `F` | 全屏 |
+| `Esc` | 退出演示模式 |
+
+所有核心演示操作同时提供触屏按钮，兼容平板及其他触摸设备。
+
+---
+
+## 🧱 LEGO Algorithm Lab 系列
+
+LEGO Algorithm Lab 是一个以积木视觉语言探索计算机算法的系列实验项目。
+
+| 项目 | 主题 | 在线体验 |
+| --- | --- | --- |
+| [LEGO BatchLab](https://github.com/luo00oul/lego-batchlab) | 批处理调度算法 | [Visit](https://luo00oul.github.io/lego-batchlab/) |
+| [LEGO HuffmanLab](https://github.com/luo00oul/lego-huffmanlab) | 多元 Huffman 与贪心算法 | [Visit](https://luo00oul.github.io/lego-huffmanlab/) |
+
+系列项目致力于将抽象的算法思想转化为可以观察、操作、探索和验证的交互式学习体验。
+
+---
+
+## 🤝 反馈与贡献
+
+欢迎通过 GitHub Issues 提出：
+
+- 算法正确性问题。
+- 可视化与交互体验建议。
+- 性能优化方案。
+- 文档改进建议。
+- 新的算法实验与教学场景。
+
+[提交 Issue](https://github.com/luo00oul/lego-huffmanlab/issues)
+
+---
+
+## 免责声明
+
+本项目为独立开发的非官方算法教学实验项目，与 LEGO Group 不存在官方合作、授权或关联关系。
+
+项目中的积木、底板与角色形象采用代码几何绘制，仅用于算法可视化与学习展示。
+
+---
+
+**Build with Bricks. Think with Algorithms.**
+
+让算法不再只是代码，而是可以亲手搭建的思想。
