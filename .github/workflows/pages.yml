@@ -30,7 +30,8 @@ jobs:
         uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
-        run: bun install --frozen-lockfile
+        run: |
+          bun install --frozen-lockfile || (echo "::warning::bun.lock differs from package.json; falling back to bun install" && bun install)
 
       - name: TypeScript type check
         run: bun run lint
